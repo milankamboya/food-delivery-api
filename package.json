@@ -25,7 +25,11 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
+    "@types/bcrypt": "^6.0.0",
     "@types/uuid": "^10.0.0",
+    "bcrypt": "^6.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.3",
     "mysql2": "^3.16.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
@@ -69,6 +73,9 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!uuid)"
+    ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
