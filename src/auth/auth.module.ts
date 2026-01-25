@@ -8,6 +8,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { CacheModule } from '@nestjs/cache-manager';
+import { BlacklistService } from './blacklist.service';
 
 @Module({
   imports: [
@@ -24,8 +26,15 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
       }),
       inject: [ConfigService],
     }),
+    CacheModule.register(),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy, JwtRefreshStrategy],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    JwtRefreshStrategy,
+    BlacklistService,
+  ],
   controllers: [AuthController],
   exports: [AuthService],
 })

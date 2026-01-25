@@ -3,6 +3,7 @@ import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { BlacklistService } from './blacklist.service';
 
 @Injectable()
 export class AuthService {
@@ -10,6 +11,7 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private blacklistService: BlacklistService,
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
@@ -40,5 +42,14 @@ export class AuthService {
       access_token: accessToken,
       refresh_token: refreshToken,
     };
+  }
+
+  async logout(token: string, exp: number): Promise<void> {
+    const now = Math.floor(Date.now() / 1000);
+    const ttl = exp - now;
+
+    if (ttl > 0) {
+      await this.blacklistService.blacklistToken(token, ttl);
+    }
   }
 }
