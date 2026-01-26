@@ -16,11 +16,11 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string) {
     return this.userRepository.findOne({ where: { email } });
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto) {
     const existingUser = await this.userRepository.findOne({
       where: { email: createUserDto.email },
     });
@@ -41,7 +41,11 @@ export class UserService {
   }
 
   findAll() {
-    return this.userRepository.find();
+    return this.userRepository.find({
+      where: {
+        isObsolete: false,
+      },
+    });
   }
 
   async findOne(id: string) {
