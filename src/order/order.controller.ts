@@ -47,6 +47,12 @@ export class OrderController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get(':id/history')
+  getHistory(@Param('id') id: string) {
+    return this.orderService.getHistory(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch(':id/status')
   updateStatus(
     @Request() req,

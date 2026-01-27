@@ -24,6 +24,8 @@ export class OrderService {
     private readonly restaurantRepository: Repository<Restaurant>,
     @InjectRepository(Meal)
     private readonly mealRepository: Repository<Meal>,
+    @InjectRepository(OrderHistory)
+    private readonly orderHistoryRepository: Repository<OrderHistory>,
     private readonly couponService: CouponService,
     private readonly dataSource: DataSource,
   ) {}
@@ -264,5 +266,19 @@ export class OrderService {
     }
 
     return this.findOne(order.id);
+  }
+
+  async getHistory(orderId: string) {
+    const order = await this.orderRepository.findOne({
+      where: { id: orderId },
+    });
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    return this.orderHistoryRepository.find({
+      where: { orderId },
+      order: { createdAt: 'DESC' },
+    });
   }
 }
