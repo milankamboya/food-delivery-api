@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeepPartial, FindOptionsWhere } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -16,8 +16,12 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async findByEmail(email: string) {
-    return this.userRepository.findOne({ where: { email } });
+  async findByEmail(email: string, includeBlocked = false) {
+    const where: FindOptionsWhere<User> = { email, isObsolete: false };
+    if (!includeBlocked) {
+      where.isBlocked = false;
+    }
+    return this.userRepository.findOne({ where });
   }
 
   async create(createUserDto: CreateUserDto) {
@@ -40,16 +44,29 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  findAll() {
-    return this.userRepository.find({
-      where: {
-        isObsolete: false,
-      },
-    });
+  async findAll(includeBlocked = false) {
+    const where: FindOptionsWhere<User> = { isObsolete: false };
+    if (!includeBlocked) {
+      where.isBlocked = false;
+    }
+    return this.userRepository.find({ where });
   }
 
-  async findOne(id: string) {
-    const user = await this.userRepository.findOneBy({ id });
+  async update(id: string, updateData: DeepPartial<User>) {
+    const user = await this.findOne(id, true); // Admin update might target blocked user
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    await this.userRepository.save({ ...user, ...updateData });
+    return this.findOne(id, true);
+  }
+
+  async findOne(id: string, includeBlocked = false) {
+    const where: FindOptionsWhere<User> = { id, isObsolete: false };
+    if (!includeBlocked) {
+      where.isBlocked = false;
+    }
+    const user = await this.userRepository.findOne({ where });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
