@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Delete } from '@nestjs/common';
 import { UserService } from './user.service';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
 @Controller('users')
 export class UserController {
@@ -8,6 +9,11 @@ export class UserController {
   @Get()
   findAll() {
     return this.userService.findAll();
+  }
+
+  @Get('me')
+  getProfile(@CurrentUser() user: { id: string }) {
+    return this.userService.findOne(user.id);
   }
 
   @Get(':id')

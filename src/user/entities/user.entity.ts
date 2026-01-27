@@ -8,6 +8,7 @@ import {
   DeleteDateColumn,
   BeforeInsert,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { generateUuid } from '../../common/utils/uuid.util';
 
 export enum UserRole {
@@ -39,6 +40,7 @@ export class User {
   @Column({ length: 255, unique: true })
   email: string;
 
+  @Exclude()
   @Column({ name: 'password_hash', length: 255 })
   passwordHash: string;
 
