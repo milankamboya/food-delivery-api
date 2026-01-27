@@ -40,6 +40,9 @@ export class Restaurant {
   @Column({ length: 255 })
   name: string;
 
+  @Column({ type: 'text', nullable: true })
+  description: string;
+
   @Column({ length: 50, nullable: true })
   phone: string;
 
