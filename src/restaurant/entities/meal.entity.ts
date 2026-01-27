@@ -12,6 +12,10 @@ import {
 } from 'typeorm';
 import { Restaurant } from './restaurant.entity';
 import { generateUuid } from '../../common/utils/uuid.util';
+import {
+  DB_COLUMNS,
+  DB_TYPES,
+} from '../../common/constants/database.constants';
 
 @Entity('meals')
 @Index('idx_meals_restaurant', ['restaurantId'])
@@ -40,7 +44,7 @@ export class Meal {
   @Column({ length: 255 })
   name: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: DB_TYPES.TEXT, nullable: true })
   description: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
@@ -49,26 +53,49 @@ export class Meal {
   @Column({ type: 'char', length: 3, default: 'INR' })
   currency: string;
 
-  @Column({ name: 'is_available', type: 'tinyint', width: 1, default: 1 })
+  @Column({
+    name: DB_COLUMNS.IS_AVAILABLE,
+    type: DB_TYPES.TINYINT,
+    width: 1,
+    default: 1,
+  })
   isAvailable: boolean;
 
-  @Column({ name: 'is_blocked', type: 'tinyint', width: 1, default: 0 })
+  @Column({
+    name: DB_COLUMNS.IS_BLOCKED,
+    type: DB_TYPES.TINYINT,
+    width: 1,
+    default: 0,
+  })
   isBlocked: boolean;
 
   @DeleteDateColumn({
-    name: 'deleted_at',
-    type: 'datetime',
+    name: DB_COLUMNS.DELETED_AT,
+    type: DB_TYPES.DATETIME,
     precision: 3,
     nullable: true,
   })
   deletedAt: Date | null;
 
-  @Column({ name: 'is_obsolete', type: 'tinyint', width: 1, default: 0 })
+  @Column({
+    name: DB_COLUMNS.IS_OBSOLETE,
+    type: DB_TYPES.TINYINT,
+    width: 1,
+    default: 0,
+  })
   isObsolete: boolean;
 
-  @CreateDateColumn({ name: 'created_at', type: 'datetime', precision: 3 })
+  @CreateDateColumn({
+    name: DB_COLUMNS.CREATED_AT,
+    type: DB_TYPES.DATETIME,
+    precision: 3,
+  })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at', type: 'datetime', precision: 3 })
+  @UpdateDateColumn({
+    name: DB_COLUMNS.UPDATED_AT,
+    type: DB_TYPES.DATETIME,
+    precision: 3,
+  })
   updatedAt: Date;
 }

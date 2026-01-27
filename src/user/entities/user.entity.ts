@@ -10,6 +10,10 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { generateUuid } from '../../common/utils/uuid.util';
+import {
+  DB_COLUMNS,
+  DB_TYPES,
+} from '../../common/constants/database.constants';
 
 export enum UserRole {
   CUSTOMER = 'CUSTOMER',
@@ -44,23 +48,41 @@ export class User {
   @Column({ name: 'password_hash', length: 255 })
   passwordHash: string;
 
-  @Column({ name: 'is_blocked', type: 'tinyint', width: 1, default: 0 })
+  @Column({
+    name: DB_COLUMNS.IS_BLOCKED,
+    type: DB_TYPES.TINYINT,
+    width: 1,
+    default: 0,
+  })
   isBlocked: boolean;
 
   @DeleteDateColumn({
-    name: 'deleted_at',
-    type: 'datetime',
+    name: DB_COLUMNS.DELETED_AT,
+    type: DB_TYPES.DATETIME,
     precision: 3,
     nullable: true,
   })
   deletedAt: Date | null;
 
-  @Column({ name: 'is_obsolete', type: 'tinyint', width: 1, default: 0 })
+  @Column({
+    name: DB_COLUMNS.IS_OBSOLETE,
+    type: DB_TYPES.TINYINT,
+    width: 1,
+    default: 0,
+  })
   isObsolete: boolean;
 
-  @CreateDateColumn({ name: 'created_at', type: 'datetime', precision: 3 })
+  @CreateDateColumn({
+    name: DB_COLUMNS.CREATED_AT,
+    type: DB_TYPES.DATETIME,
+    precision: 3,
+  })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at', type: 'datetime', precision: 3 })
+  @UpdateDateColumn({
+    name: DB_COLUMNS.UPDATED_AT,
+    type: DB_TYPES.DATETIME,
+    precision: 3,
+  })
   updatedAt: Date;
 }

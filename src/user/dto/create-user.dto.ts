@@ -1,3 +1,6 @@
+import { REGEX } from '../../common/constants/regex.constants';
+import { VALIDATION_MESSAGES } from '../../common/constants/messages.constants';
+
 import {
   IsEmail,
   IsEnum,
@@ -21,9 +24,8 @@ export class CreateUserDto {
   @IsNotEmpty()
   @MinLength(8)
   @MaxLength(24)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).*$/, {
-    message:
-      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*)',
+  @Matches(REGEX.PASSWORD, {
+    message: VALIDATION_MESSAGES.PASSWORD_COMPLEXITY,
   })
   password: string;
 

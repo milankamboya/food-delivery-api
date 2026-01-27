@@ -9,6 +9,10 @@ import {
   BeforeInsert,
 } from 'typeorm';
 import { generateUuid } from '../../common/utils/uuid.util';
+import {
+  DB_COLUMNS,
+  DB_TYPES,
+} from '../../common/constants/database.constants';
 
 @Entity('coupons')
 @Index('idx_coupons_active', ['isActive'])
@@ -30,23 +34,41 @@ export class Coupon {
   @Column({ name: 'discount_percent', type: 'decimal', precision: 5, scale: 2 })
   discountPercent: number;
 
-  @Column({ name: 'is_active', type: 'tinyint', width: 1, default: 1 })
+  @Column({
+    name: DB_COLUMNS.IS_ACTIVE,
+    type: DB_TYPES.TINYINT,
+    width: 1,
+    default: 1,
+  })
   isActive: boolean;
 
   @DeleteDateColumn({
-    name: 'deleted_at',
-    type: 'datetime',
+    name: DB_COLUMNS.DELETED_AT,
+    type: DB_TYPES.DATETIME,
     precision: 3,
     nullable: true,
   })
   deletedAt: Date | null;
 
-  @Column({ name: 'is_obsolete', type: 'tinyint', width: 1, default: 0 })
+  @Column({
+    name: DB_COLUMNS.IS_OBSOLETE,
+    type: DB_TYPES.TINYINT,
+    width: 1,
+    default: 0,
+  })
   isObsolete: boolean;
 
-  @CreateDateColumn({ name: 'created_at', type: 'datetime', precision: 3 })
+  @CreateDateColumn({
+    name: DB_COLUMNS.CREATED_AT,
+    type: DB_TYPES.DATETIME,
+    precision: 3,
+  })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at', type: 'datetime', precision: 3 })
+  @UpdateDateColumn({
+    name: DB_COLUMNS.UPDATED_AT,
+    type: DB_TYPES.DATETIME,
+    precision: 3,
+  })
   updatedAt: Date;
 }
