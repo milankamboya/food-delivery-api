@@ -6,7 +6,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, In } from 'typeorm';
-import { Order, OrderStatus } from './entities/order.entity';
+import { Order } from './entities/order.entity';
+import { OrderStatus } from './entities/order-status.enum';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderItem } from './entities/order-item.entity';
 import { OrderHistory } from './entities/order-history.entity';

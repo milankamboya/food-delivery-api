@@ -24,7 +24,7 @@ import { CouponModule } from 'src/coupon/coupon.module';
         username: configService.get<string>('DB_SERVER_USERNAME'),
         password: configService.get<string>('DB_SERVER_PASSWORD'),
         database: configService.get<string>('DATABASE'),
-        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        autoLoadEntities: true,
         synchronize: false,
       }),
       inject: [ConfigService],

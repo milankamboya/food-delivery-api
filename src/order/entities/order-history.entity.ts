@@ -9,7 +9,8 @@ import {
   DeleteDateColumn,
   Index,
 } from 'typeorm';
-import { Order, OrderStatus } from './order.entity';
+import { Order } from './order.entity';
+import { OrderStatus } from './order-status.enum';
 import { User } from '../../user/entities/user.entity';
 import { generateUuid } from '../../common/utils/uuid.util';
 
