@@ -61,6 +61,9 @@ export class Restaurant {
   @Column({ name: 'is_active', type: 'tinyint', width: 1, default: 1 })
   isActive: boolean;
 
+  @Column({ name: 'is_blocked', type: 'tinyint', width: 1, default: 0 })
+  isBlocked: boolean;
+
   @DeleteDateColumn({
     name: 'deleted_at',
     type: 'datetime',
