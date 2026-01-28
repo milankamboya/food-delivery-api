@@ -26,11 +26,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const responseBody = {
       statusCode: httpStatus,
-      timestamp: new Date().toISOString(),
-      path: httpAdapter.getRequestUrl(ctx.getRequest()) as string,
+      // timestamp: new Date().toISOString(),
+      // path: httpAdapter.getRequestUrl(ctx.getRequest()) as string,
       message:
         exception instanceof HttpException
-          ? exception.getResponse()
+          ? exception.message || 'Internal server error'
           : 'Internal server error',
     };
 
