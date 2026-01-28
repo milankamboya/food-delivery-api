@@ -60,6 +60,7 @@ export class RestaurantService {
     }
     return this.restaurantRepository.findOne({
       where,
+      relations: ['meals'],
     });
   }
 

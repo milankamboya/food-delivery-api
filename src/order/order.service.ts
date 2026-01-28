@@ -252,12 +252,11 @@ export class OrderService {
     if (isRestaurantOwner) {
       // Owner can Cancel check
       if (
-        status === OrderStatus.CANCELLED &&
-        currentStatus !== OrderStatus.DELIVERED
+        currentStatus !== OrderStatus.DELIVERED &&
+        status === OrderStatus.CANCELLED
       ) {
         allowed = true;
       }
-
       // PENDING -> CONFIRMED (instead of PROCESSING)
       if (
         currentStatus === OrderStatus.PENDING &&
