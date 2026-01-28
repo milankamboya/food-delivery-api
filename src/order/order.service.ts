@@ -40,6 +40,9 @@ export class OrderService {
     if (!restaurant) {
       throw new NotFoundException('Restaurant not found');
     }
+    if (restaurant.isBlocked) {
+      throw new BadRequestException('Restaurant is blocked');
+    }
 
     const mealIds = items.map((i) => i.mealId);
     const meals = await this.mealRepository.find({
@@ -49,6 +52,15 @@ export class OrderService {
     if (meals.length !== mealIds.length) {
       throw new BadRequestException(
         'Some meals not found or do not belong to the restaurant',
+      );
+    }
+
+    // Check for blocked meals
+    const blockedMeals = meals.filter((meal) => meal.isBlocked);
+    if (blockedMeals.length > 0) {
+      const blockedMealNames = blockedMeals.map((m) => m.name).join(', ');
+      throw new BadRequestException(
+        `The following meals are blocked: ${blockedMealNames}`,
       );
     }
 

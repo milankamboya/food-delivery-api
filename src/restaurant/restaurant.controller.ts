@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 import { MealService } from './meal.service';
 import { Public } from 'src/common/decorators/public.decorator';
@@ -25,6 +25,10 @@ export class RestaurantController {
   @Get(':id/meals')
   async getMeals(@Param('id') id: string) {
     this.logger.log(`Fetching meals for restaurant id: ${id}`);
+    const restaurant = await this.restaurantService.findOne(id);
+    if (!restaurant) {
+      throw new NotFoundException('Restaurant not found or blocked');
+    }
     return this.mealService.findAllByRestaurant(id);
   }
 }
