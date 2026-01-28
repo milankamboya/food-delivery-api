@@ -5,9 +5,9 @@ import { UserModule } from '../user/user.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { LocalStrategy } from './strategies/local.strategy';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { LocalStrategy } from '../common/strategies/local.strategy';
+import { JwtStrategy } from '../common/strategies/jwt.strategy';
+import { JwtRefreshStrategy } from '../common/strategies/jwt-refresh.strategy';
 import { CacheModule } from '@nestjs/cache-manager';
 import { BlacklistService } from './blacklist.service';
 

@@ -13,10 +13,10 @@ import { RestaurantService } from '../restaurant/restaurant.service';
 import { MealService } from '../restaurant/meal.service';
 import { Meal } from '../restaurant/entities/meal.entity';
 import { UserService } from '../user/user.service';
-import { Roles } from '../auth/decorators/roles.decorator';
+import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../user/entities/user.entity';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
 
 import { AdminCreateRestaurantDto } from './dto/admin-create-restaurant.dto';
 import { AdminUpdateRestaurantDto } from './dto/admin-update-restaurant.dto';

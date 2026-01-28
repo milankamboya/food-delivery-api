@@ -2,9 +2,9 @@ import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './guards/local-auth.guard';
-import { JwtRefreshAuthGuard } from './guards/jwt-refresh-auth.guard';
-import { Public } from './decorators/public.decorator';
+import { LocalAuthGuard } from '../common/guards/local-auth.guard';
+import { JwtRefreshAuthGuard } from '../common/guards/jwt-refresh-auth.guard';
+import { Public } from '../common/decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {

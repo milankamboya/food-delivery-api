@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Delete } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 
 @Controller('users')
 export class UserController {

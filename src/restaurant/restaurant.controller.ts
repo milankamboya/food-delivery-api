@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
 import { MealService } from './meal.service';
-import { Public } from 'src/auth/decorators/public.decorator';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('restaurants')
 export class RestaurantController {
