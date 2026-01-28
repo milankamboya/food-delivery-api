@@ -1,98 +1,119 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Food Delivery API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A NestJS-based REST API for a food delivery service. This application connects Customers, Restaurant Owners, and Administrators to facilitate ordering meals from restaurants.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 📋 Prerequisites
 
-## Description
+Before starting the project, ensure you have the following installed:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Node.js** (v18 or later recommended)
+- **npm** (comes with Node.js) or **yarn**
+- **MySQL** or **MariaDB** Database Server (v8.0+ recommended)
 
-## Project setup
+## ⚙️ Configuration
 
-```bash
-$ npm install
-```
+1. **Clone the repository** (if you haven't already).
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+3. **Environment Setup**:
+   The application uses environment-specific configuration files (e.g., `.env.development`, `.env.test`).
 
-## Compile and run the project
+   Create a `.env.development` file in the root directory by copying the provided sample:
 
-```bash
-# development
-$ npm run start
+   ```bash
+   cp sample.env .env.development
+   ```
 
-# watch mode
-$ npm run start:dev
+4. **Update Environment Variables**:
+   Open `.env.development` and configure your database credentials and other settings:
 
-# production mode
-$ npm run start:prod
-```
+   ```dotenv
+   # Database Configuration
+   DB_SERVER_PORT=3306
+   DB_SERVER_HOST=localhost
+   DB_SERVER_USERNAME=your_db_user
+   DB_SERVER_PASSWORD=your_db_password
+   DATABASE=food_delivery_app
 
-## Run tests
+   # JWT Security
+   JWT_SECRET=your_super_secret_key
+   JWT_REFRESH_SECRET=your_refresh_secret_key
+   JWT_EXPIRES_IN=1d
+   JWT_REFRESH_EXPIRES_IN=7d
 
-```bash
-# unit tests
-$ npm run test
+   # Logging
+   LOG_LEVEL=info
+   ```
 
-# e2e tests
-$ npm run test:e2e
+5. **Database Setup**:
+   Ensure the database specified in `DATABASE` exists in your MySQL server.
+   ```sql
+   CREATE DATABASE food_delivery_app;
+   ```
+   _Note: If `synchronize` is set to `false` in `src/app/app.module.ts`, you may need to enable it temporarily to generate the database tables on the first run, or run migrations if applicable._
 
-# test coverage
-$ npm run test:cov
-```
+## 🚀 How to Start
 
-## Deployment
+### Development Mode
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+To start the application in development mode with hot-reloading:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+The server will start (default port: `8080`) and the API will be accessible at `http://localhost:8080/api`.
 
-## Resources
+### Production Build
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+npm run build
+npm run start:prod
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 📖 How to Use
 
-## Support
+### API Prefix
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+All API endpoints are prefixed with `/api`.
 
-## Stay in touch
+### User Roles
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+The system controls access using three main roles:
 
-## License
+1.  **Customer**:
+    - Browse restaurants.
+    - View meals.
+    - Place and track orders.
+    - Manage their own profile.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+2.  **Restaurant Owner**:
+    - Create and manage their Restaurants.
+    - Add/Edit Meals.
+    - Manage Order statuses (Processing, In Route, Delivered).
+
+3.  **Administrator**:
+    - Full access to Users, Restaurants, and Meals.
+    - Can block/unblock entities.
+
+### Accessing the API
+
+Since this is a backend-only project, use an API client like **Postman** or **Insomnia** to interact with the endpoints.
+
+1.  **Sign Up / Login**: Use the auth endpoints to get an access token.
+2.  **Authentication**: Include the token in the `Authorization` header for protected routes:
+    ```
+    Authorization: Bearer <your_access_token>
+    ```
+
+## 📂 Project Structure
+
+- `src/app`: Main application module and setup.
+- `src/auth`: Authentication logic (JWT, Guards).
+- `src/user`: User management (Customer/Owner profiles).
+- `src/restaurant`: Restaurant and Meal management.
+- `src/order`: Order processing and status workflows.
+- `src/common`: Shared utilities, filters, and guards.
+- `logs/`: Application logs (generated at runtime).
