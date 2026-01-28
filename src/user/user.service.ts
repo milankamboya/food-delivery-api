@@ -2,10 +2,11 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeepPartial, FindOptionsWhere } from 'typeorm';
-import { User } from './entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 
@@ -57,6 +58,11 @@ export class UserService {
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
+
+    if (user.role === UserRole.ADMIN) {
+      throw new ForbiddenException('Admin users cannot be updated');
+    }
+
     await this.userRepository.save({ ...user, ...updateData });
     return this.findOne(id, true);
   }
@@ -74,6 +80,12 @@ export class UserService {
   }
 
   async remove(id: string) {
+    const user = await this.findOne(id, true);
+
+    if (user.role === UserRole.ADMIN) {
+      throw new ForbiddenException('Admin users cannot be deleted');
+    }
+
     const result = await this.userRepository.update(id, {
       deletedAt: new Date(),
       isObsolete: true,

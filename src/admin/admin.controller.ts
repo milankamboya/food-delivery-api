@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 import { RestaurantService } from '../restaurant/restaurant.service';
@@ -43,7 +44,13 @@ export class AdminController {
   }
 
   @Post('restaurants')
-  createRestaurant(@Body() dto: AdminCreateRestaurantDto) {
+  async createRestaurant(@Body() dto: AdminCreateRestaurantDto) {
+    const user = await this.userService.findOne(dto.ownerUserId);
+    if (user.role !== UserRole.OWNER) {
+      throw new BadRequestException(
+        'User must have OWNER role to be assigned to a restaurant',
+      );
+    }
     return this.restaurantService.create(dto);
   }
 
