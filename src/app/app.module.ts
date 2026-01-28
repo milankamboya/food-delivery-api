@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+import { addTransactionalDataSource } from 'typeorm-transactional';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from '../user/user.module';
@@ -30,6 +32,14 @@ import { AdminModule } from 'src/admin/admin.module';
         autoLoadEntities: true,
         synchronize: false,
       }),
+      dataSourceFactory: (options) => {
+        if (!options) {
+          throw new Error('Invalid options passed');
+        }
+        return Promise.resolve(
+          addTransactionalDataSource(new DataSource(options)),
+        );
+      },
       inject: [ConfigService],
     }),
     AuthModule,

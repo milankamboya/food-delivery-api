@@ -5,7 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, In } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { OrderStatus } from './entities/order-status.enum';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -14,6 +14,7 @@ import { OrderHistory } from './entities/order-history.entity';
 import { Meal } from '../restaurant/entities/meal.entity';
 import { Restaurant } from '../restaurant/entities/restaurant.entity';
 import { CouponService } from '../coupon/coupon.service';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class OrderService {
@@ -27,7 +28,6 @@ export class OrderService {
     @InjectRepository(OrderHistory)
     private readonly orderHistoryRepository: Repository<OrderHistory>,
     private readonly couponService: CouponService,
-    private readonly dataSource: DataSource,
   ) {}
 
   async create(userId: string, createOrderDto: CreateOrderDto): Promise<Order> {
@@ -83,42 +83,52 @@ export class OrderService {
       const discountPercent = Number(coupon.discountPercent);
       discountAmount = (subtotal * discountPercent) / 100;
     }
-
     const totalAmount = subtotal - discountAmount + tipAmount;
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    return this.createOrderInTransaction(
+      userId,
+      restaurantId,
+      subtotal,
+      discountAmount,
+      tipAmount,
+      totalAmount,
+      couponId,
+      orderItems,
+    );
+  }
 
-    try {
-      const order = new Order();
-      order.customerUserId = userId;
-      order.restaurantId = restaurantId;
-      order.status = OrderStatus.PENDING;
-      order.subtotal = subtotal;
-      order.discountAmount = discountAmount;
-      order.tipAmount = tipAmount;
-      order.totalAmount = totalAmount;
-      order.couponId = couponId;
-      order.items = orderItems;
+  @Transactional()
+  private async createOrderInTransaction(
+    userId: string,
+    restaurantId: string,
+    subtotal: number,
+    discountAmount: number,
+    tipAmount: number,
+    totalAmount: number,
+    couponId: string | null,
+    orderItems: OrderItem[],
+  ): Promise<Order> {
+    const order = new Order();
+    order.customerUserId = userId;
+    order.restaurantId = restaurantId;
+    order.status = OrderStatus.PENDING;
+    order.subtotal = subtotal;
+    order.discountAmount = discountAmount;
+    order.tipAmount = tipAmount;
+    order.totalAmount = totalAmount;
+    order.couponId = couponId;
+    order.items = orderItems;
 
-      const savedOrder = await queryRunner.manager.save(Order, order);
+    const savedOrder = await this.orderRepository.save(order);
 
-      const history = new OrderHistory();
-      history.orderId = savedOrder.id;
-      history.status = OrderStatus.PENDING;
-      history.changedByUserId = userId;
-      history.notes = 'Order placed';
-      await queryRunner.manager.save(OrderHistory, history);
+    const history = new OrderHistory();
+    history.orderId = savedOrder.id;
+    history.status = OrderStatus.PENDING;
+    history.changedByUserId = userId;
+    history.notes = 'Order placed';
+    await this.orderHistoryRepository.save(history);
 
-      await queryRunner.commitTransaction();
-      return this.findOne(savedOrder.id);
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-      throw err;
-    } finally {
-      await queryRunner.release();
-    }
+    return this.findOne(savedOrder.id);
   }
 
   async findAllByUser(userId: string) {
@@ -242,30 +252,26 @@ export class OrderService {
     // If not changed
     if (order.status === status) return order;
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      order.status = status;
-      await queryRunner.manager.save(Order, order);
-
-      const history = new OrderHistory();
-      history.orderId = order.id;
-      history.status = status;
-      history.changedByUserId = userId;
-      history.notes = `Status changed to ${status}`;
-      await queryRunner.manager.save(OrderHistory, history);
-
-      await queryRunner.commitTransaction();
-    } catch (e) {
-      await queryRunner.rollbackTransaction();
-      throw e;
-    } finally {
-      await queryRunner.release();
-    }
+    await this.updateStatusInTransaction(order, status, userId);
 
     return this.findOne(order.id);
+  }
+
+  @Transactional()
+  private async updateStatusInTransaction(
+    order: Order,
+    status: OrderStatus,
+    userId: string,
+  ) {
+    order.status = status;
+    await this.orderRepository.save(order);
+
+    const history = new OrderHistory();
+    history.orderId = order.id;
+    history.status = status;
+    history.changedByUserId = userId;
+    history.notes = `Status changed to ${status}`;
+    await this.orderHistoryRepository.save(history);
   }
 
   async getHistory(orderId: string) {
