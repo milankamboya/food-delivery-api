@@ -22,6 +22,15 @@ export class RestaurantService {
     });
   }
 
+  async findAllByOwner(ownerUserId: string) {
+    return this.restaurantRepository.find({
+      where: {
+        ownerUserId,
+        isObsolete: false,
+      },
+    });
+  }
+
   async findOne(id: string, includeBlocked = false) {
     const where: FindOptionsWhere<Restaurant> = { id, isObsolete: false };
     if (!includeBlocked) {
