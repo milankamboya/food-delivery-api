@@ -9,6 +9,7 @@ import { Repository, In } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { OrderStatus } from './entities/order-status.enum';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { OrderRawDto } from './dto/order-raw.dto';
 import { OrderItem } from './entities/order-item.entity';
 import { OrderHistory } from './entities/order-history.entity';
 import { Meal } from '../restaurant/entities/meal.entity';
@@ -137,6 +138,42 @@ export class OrderService {
       relations: ['items', 'items.meal', 'restaurant', 'history'],
       order: { createdAt: 'DESC' },
     });
+  }
+
+  async findAllByUserRaw(userId: string) {
+    type RawOrderRow = {
+      id: string;
+      status: OrderStatus;
+      totalAmount: string | number;
+      createdAt: Date;
+      restaurantName: string;
+    };
+
+    const rows: RawOrderRow[] = await this.orderRepository.query(
+      `
+      SELECT 
+        o.id, 
+        o.status, 
+        o.total_amount AS totalAmount, 
+        o.created_at AS createdAt,
+        r.name AS restaurantName
+      FROM orders o
+      LEFT JOIN restaurants r ON o.restaurant_id = r.id
+      WHERE o.customer_user_id = ?
+      ORDER BY o.created_at DESC
+      `,
+      [userId],
+    );
+
+    return rows.map(
+      (row): OrderRawDto => ({
+        id: row.id,
+        status: row.status,
+        totalAmount: Number(row.totalAmount),
+        createdAt: row.createdAt,
+        restaurantName: row.restaurantName,
+      }),
+    );
   }
 
   async findAllByRestaurant(userId: string, restaurantId: string) {

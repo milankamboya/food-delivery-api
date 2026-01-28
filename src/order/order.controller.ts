@@ -21,6 +21,11 @@ export class OrderController {
     return this.orderService.findAllByUser(user.id);
   }
 
+  @Get('my-orders-raw')
+  findAllMyOrdersRaw(@CurrentUser() user: { id: string }) {
+    return this.orderService.findAllByUserRaw(user.id);
+  }
+
   // Get orders for a specific restaurant (intended for owner)
   @Get('restaurant/:restaurantId')
   findAllByRestaurant(
