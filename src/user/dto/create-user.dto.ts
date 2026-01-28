@@ -1,34 +1,8 @@
-import { REGEX } from '../../common/constants/regex.constants';
-import { VALIDATION_MESSAGES } from '../../common/constants/messages.constants';
-
-import {
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-  MinLength,
-  MaxLength,
-  Matches,
-} from 'class-validator';
+import { IsEnum, IsNotEmpty } from 'class-validator';
 import { UserRole } from '../entities/user.entity';
+import { BaseUserDto } from './base-user.dto';
 
-export class CreateUserDto {
-  @IsNotEmpty()
-  @IsString()
-  fullName: string;
-
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-
-  @IsNotEmpty()
-  @MinLength(8)
-  @MaxLength(24)
-  @Matches(REGEX.PASSWORD, {
-    message: VALIDATION_MESSAGES.PASSWORD_COMPLEXITY,
-  })
-  password: string;
-
+export class CreateUserDto extends BaseUserDto {
   @IsEnum(UserRole)
   @IsNotEmpty()
   role: UserRole;

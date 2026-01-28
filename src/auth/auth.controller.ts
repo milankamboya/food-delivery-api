@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { CreateUserDto } from '../user/dto/create-user.dto';
+import { SignupDto } from './dto/signup.dto';
+import { UserRole } from '../user/entities/user.entity';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from '../common/guards/local-auth.guard';
@@ -15,8 +16,20 @@ export class AuthController {
 
   @Public()
   @Post('signup')
-  async signup(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async signupCustomer(@Body() signupDto: SignupDto) {
+    return this.userService.create({
+      ...signupDto,
+      role: UserRole.CUSTOMER,
+    });
+  }
+
+  @Public()
+  @Post('signup/restaurant')
+  async signupRestaurant(@Body() signupDto: SignupDto) {
+    return this.userService.create({
+      ...signupDto,
+      role: UserRole.OWNER,
+    });
   }
 
   @Public()
