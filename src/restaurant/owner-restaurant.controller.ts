@@ -9,6 +9,7 @@ import {
   UseGuards,
   ForbiddenException,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { DeepPartial } from 'typeorm';
 import { RestaurantService } from './restaurant.service';
@@ -22,6 +23,7 @@ import { CreateMealDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
 import { Meal } from './entities/meal.entity';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { QueryDto } from '../common/dto/query.dto';
 
 @Controller('owner')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -35,8 +37,8 @@ export class OwnerRestaurantController {
   // --- Restaurants ---
 
   @Get('restaurants')
-  async getMyRestaurants(@CurrentUser() user: User) {
-    return this.restaurantService.findAllByOwner(user.id);
+  async getMyRestaurants(@CurrentUser() user: User, @Query() query: QueryDto) {
+    return this.restaurantService.findAllByOwner(user.id, query);
   }
 
   @Get('restaurants/:id')

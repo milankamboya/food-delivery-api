@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOptionsWhere, DeepPartial } from 'typeorm';
+import { Repository, FindOptionsWhere, DeepPartial, ILike } from 'typeorm';
 import { Restaurant } from './entities/restaurant.entity';
+import { QueryDto } from '../common/dto/query.dto';
 
 @Injectable()
 export class RestaurantService {
@@ -10,24 +11,45 @@ export class RestaurantService {
     private restaurantRepository: Repository<Restaurant>,
   ) {}
 
-  async findAll(includeBlocked = false) {
+  async findAll(query: QueryDto, includeBlocked = false) {
+    const { search, page = 1, limit = 10, sortOrder } = query;
+    const skip = (page - 1) * limit;
+
     const where: FindOptionsWhere<Restaurant> = {
       isObsolete: false,
     };
     if (!includeBlocked) {
       where.isBlocked = false;
     }
+    if (search) {
+      where.name = ILike(`%${search}%`);
+    }
+
     return this.restaurantRepository.find({
       where,
+      skip,
+      take: limit,
+      order: sortOrder ? { updatedAt: sortOrder } : undefined,
     });
   }
 
-  async findAllByOwner(ownerUserId: string) {
+  async findAllByOwner(ownerUserId: string, query: QueryDto) {
+    const { search, page = 1, limit = 10, sortOrder } = query;
+    const skip = (page - 1) * limit;
+
+    const where: FindOptionsWhere<Restaurant> = {
+      ownerUserId,
+      isObsolete: false,
+    };
+    if (search) {
+      where.name = ILike(`%${search}%`);
+    }
+
     return this.restaurantRepository.find({
-      where: {
-        ownerUserId,
-        isObsolete: false,
-      },
+      where,
+      skip,
+      take: limit,
+      order: sortOrder ? { updatedAt: sortOrder } : undefined,
     });
   }
 

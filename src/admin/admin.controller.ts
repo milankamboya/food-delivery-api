@@ -40,7 +40,7 @@ export class AdminController {
 
   @Get('restaurants')
   getAllRestaurants() {
-    return this.restaurantService.findAll(true);
+    return this.restaurantService.findAll({}, true);
   }
 
   @Post('restaurants')
@@ -71,7 +71,7 @@ export class AdminController {
 
   @Get('restaurants/:id/meals')
   getMealsByRestaurant(@Param('id') id: string) {
-    return this.mealService.findAllByRestaurant(id, true);
+    return this.mealService.findAllByRestaurant(id, {}, true);
   }
 
   @Get('meals/:id')

@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOptionsWhere, DeepPartial } from 'typeorm';
+import { Repository, FindOptionsWhere, DeepPartial, ILike } from 'typeorm';
 import { Meal } from './entities/meal.entity';
+import { QueryDto } from '../common/dto/query.dto';
 
 @Injectable()
 export class MealService {
@@ -10,7 +11,14 @@ export class MealService {
     private mealRepository: Repository<Meal>,
   ) {}
 
-  async findAllByRestaurant(restaurantId: string, includeBlocked = false) {
+  async findAllByRestaurant(
+    restaurantId: string,
+    query: QueryDto,
+    includeBlocked = false,
+  ) {
+    const { search, page = 1, limit = 10, sortOrder } = query;
+    const skip = (page - 1) * limit;
+
     const where: FindOptionsWhere<Meal> = {
       restaurantId,
       isObsolete: false,
@@ -18,8 +26,15 @@ export class MealService {
     if (!includeBlocked) {
       where.isBlocked = false;
     }
+    if (search) {
+      where.name = ILike(`%${search}%`);
+    }
+
     return this.mealRepository.find({
       where,
+      skip,
+      take: limit,
+      order: sortOrder ? { updatedAt: sortOrder } : undefined,
     });
   }
 
