@@ -48,11 +48,16 @@ export class MealService {
   }
 
   async remove(id: string) {
-    const meal = await this.findOne(id, true);
-    if (!meal) {
+    const result = await this.mealRepository.update(id, {
+      deletedAt: new Date(),
+      isObsolete: true,
+    });
+
+    if (result.affected === 0) {
       throw new NotFoundException(`Meal with ID ${id} not found`);
     }
-    await this.mealRepository.softDelete(id);
-    return { success: true };
+    return {
+      message: `Meal with ID ${id} has been soft deleted and marked obsolete`,
+    };
   }
 }

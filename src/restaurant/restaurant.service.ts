@@ -47,11 +47,16 @@ export class RestaurantService {
   }
 
   async remove(id: string) {
-    const restaurant = await this.findOne(id, true);
-    if (!restaurant) {
+    const result = await this.restaurantRepository.update(id, {
+      deletedAt: new Date(),
+      isObsolete: true,
+    });
+
+    if (result.affected === 0) {
       throw new NotFoundException(`Restaurant with ID ${id} not found`);
     }
-    await this.restaurantRepository.softDelete(id);
-    return { success: true };
+    return {
+      message: `Restaurant with ID ${id} has been soft deleted and marked obsolete`,
+    };
   }
 }
