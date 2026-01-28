@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderService } from './order.service';
-import { OrderController } from './order.controller';
+import { CustomerOrderController } from './customer-order.controller';
+import { OwnerOrderController } from './owner-order.controller';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
 import { OrderHistory } from './entities/order-history.entity';
@@ -21,6 +22,6 @@ import { CouponModule } from '../coupon/coupon.module';
     CouponModule,
   ],
   providers: [OrderService],
-  controllers: [OrderController],
+  controllers: [CustomerOrderController, OwnerOrderController],
 })
 export class OrderModule {}
