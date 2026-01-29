@@ -23,9 +23,9 @@ export class RestaurantController {
 
   @Public()
   @Get()
-  async findAll(@Query() query: QueryDto) {
+  async findAll(@Query() query: QueryDto, @Query('fields') fields?: string) {
     this.logger.log('Fetching all restaurants');
-    return this.restaurantService.findAll(query);
+    return this.restaurantService.findAll(query, fields, false);
   }
 
   @Public()

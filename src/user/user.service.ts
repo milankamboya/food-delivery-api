@@ -9,6 +9,7 @@ import { Repository, DeepPartial, FindOptionsWhere } from 'typeorm';
 import { User, UserRole } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { parseFieldSelection } from '../common/utils/query-parser.util';
 
 @Injectable()
 export class UserService {
@@ -45,12 +46,13 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async findAll(includeBlocked = false) {
+  async findAll(includeBlocked = false, fields?: string) {
+    const select = parseFieldSelection<User>(fields || '');
     const where: FindOptionsWhere<User> = { isObsolete: false };
     if (!includeBlocked) {
       where.isBlocked = false;
     }
-    return this.userRepository.find({ where });
+    return this.userRepository.find({ where, select });
   }
 
   async update(id: string, updateData: DeepPartial<User>) {

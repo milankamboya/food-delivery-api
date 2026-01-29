@@ -6,6 +6,7 @@ import {
   Param,
   UseGuards,
   Patch,
+  Query,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -31,8 +32,11 @@ export class CustomerOrderController {
   }
 
   @Get('my-orders')
-  findAllMyOrders(@CurrentUser() user: { id: string }) {
-    return this.orderService.findAllByUser(user.id);
+  findAllMyOrders(
+    @CurrentUser() user: { id: string },
+    @Query('fields') fields?: string,
+  ) {
+    return this.orderService.findAllByUser(user.id, fields);
   }
 
   @Get('my-orders-raw')

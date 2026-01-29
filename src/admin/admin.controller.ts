@@ -40,7 +40,7 @@ export class AdminController {
 
   @Get('restaurants')
   getAllRestaurants() {
-    return this.restaurantService.findAll({}, true);
+    return this.restaurantService.findAll({}, undefined, true);
   }
 
   @Post('restaurants')

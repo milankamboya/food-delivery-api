@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere, DeepPartial, ILike } from 'typeorm';
 import { Restaurant } from './entities/restaurant.entity';
 import { QueryDto } from '../common/dto/query.dto';
+import { parseFieldSelection } from '../common/utils/query-parser.util';
 
 @Injectable()
 export class RestaurantService {
@@ -11,9 +12,10 @@ export class RestaurantService {
     private restaurantRepository: Repository<Restaurant>,
   ) {}
 
-  async findAll(query: QueryDto, includeBlocked = false) {
+  async findAll(query: QueryDto, fields?: string, includeBlocked = false) {
     const { search, page = 1, limit = 10, sortOrder } = query;
     const skip = (page - 1) * limit;
+    const select = parseFieldSelection<Restaurant>(fields || '');
 
     const where: FindOptionsWhere<Restaurant> = {
       isObsolete: false,
@@ -27,6 +29,7 @@ export class RestaurantService {
 
     return this.restaurantRepository.find({
       where,
+      select,
       skip,
       take: limit,
       order: sortOrder ? { updatedAt: sortOrder } : undefined,

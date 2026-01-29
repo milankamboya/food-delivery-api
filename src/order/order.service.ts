@@ -16,6 +16,11 @@ import { Meal } from '../restaurant/entities/meal.entity';
 import { Restaurant } from '../restaurant/entities/restaurant.entity';
 import { CouponService } from '../coupon/coupon.service';
 import { Transactional } from 'typeorm-transactional';
+import {
+  parseFieldSelection,
+  parseRelationsFromFields,
+  sanitizeSelectForRelations,
+} from '../common/utils/query-parser.util';
 
 @Injectable()
 export class OrderService {
@@ -144,11 +149,20 @@ export class OrderService {
     return this.findOne(savedOrder.id);
   }
 
-  async findAllByUser(userId: string) {
+  async findAllByUser(userId: string, fields?: string) {
+    const knownRelations = ['items', 'items.meal', 'restaurant', 'history'];
+    const select = parseFieldSelection<Order>(fields || '');
+    const relations = fields
+      ? parseRelationsFromFields(fields, knownRelations)
+      : knownRelations;
+
+    sanitizeSelectForRelations(select, relations);
+
     return this.orderRepository.find({
       where: { customerUserId: userId },
-      relations: ['items', 'items.meal', 'restaurant', 'history'],
+      relations,
       order: { createdAt: 'DESC' },
+      select,
     });
   }
 
@@ -188,7 +202,11 @@ export class OrderService {
     );
   }
 
-  async findAllByRestaurant(userId: string, restaurantId: string) {
+  async findAllByRestaurant(
+    userId: string,
+    restaurantId: string,
+    fields?: string,
+  ) {
     const restaurant = await this.restaurantRepository.findOne({
       where: { id: restaurantId },
     });
@@ -201,10 +219,19 @@ export class OrderService {
       throw new ForbiddenException('You are not the owner of this restaurant');
     }
 
+    const knownRelations = ['items', 'items.meal', 'user', 'history'];
+    const select = parseFieldSelection<Order>(fields || '');
+    const relations = fields
+      ? parseRelationsFromFields(fields, knownRelations)
+      : knownRelations;
+
+    sanitizeSelectForRelations(select, relations);
+
     return this.orderRepository.find({
       where: { restaurantId },
-      relations: ['items', 'items.meal', 'user', 'history'],
+      relations,
       order: { createdAt: 'DESC' },
+      select,
     });
   }
 
