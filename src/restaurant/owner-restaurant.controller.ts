@@ -24,6 +24,7 @@ import { UpdateMealDto } from './dto/update-meal.dto';
 import { Meal } from './entities/meal.entity';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { QueryDto } from '../common/dto/query.dto';
+import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 
 @Controller('owner')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -51,6 +52,18 @@ export class OwnerRestaurantController {
       throw new ForbiddenException('You are not the owner of this restaurant');
     }
     return restaurant;
+  }
+
+  @Post('restaurants')
+  async createRestaurant(
+    @Body() dto: CreateRestaurantDto,
+    @CurrentUser() user: User,
+  ) {
+    const restaurantInfo = {
+      ...dto,
+      ownerUserId: user.id,
+    };
+    return this.restaurantService.create(restaurantInfo);
   }
 
   @Put('restaurants/:id')
