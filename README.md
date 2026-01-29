@@ -117,3 +117,27 @@ Since this is a backend-only project, use an API client like **Postman** or **In
 - `src/order`: Order processing and status workflows.
 - `src/common`: Shared utilities, filters, and guards.
 - `logs/`: Application logs (generated at runtime).
+
+## 🏆 Technical Features Showcase
+
+This project showcases advanced architectural patterns and Senior-level engineering practices:
+
+- **🔐 Advanced Authentication & Security**:
+  - **Authentication**: Implemented robust **OAuth2 / JWT** strategies using `passport-jwt` for secure stateless access.
+  - **RBAC (Role-Based Access Control)**: Granular permissions using custom `@Roles()` decorators and `Guards`.
+  - **Global Serialization**: Centralized `ClassSerializerInterceptor` to automatically strip sensitive data (e.g., passwords) from responses.
+
+- **🏗️ Scalable Architecture (SOLID)**:
+  - **Modular Design**: Feature-based standard folder structure following Domain-Driven Design principles.
+  - **SOLID Compliance**: Strict adherence to **Single Responsibility Principle** (e.g., separating `Customer` and `Owner` controllers to isolated files).
+  - **Global Exception Handling**: Centralized `AllExceptionsFilter` ensuring consistent error schemas system-wide.
+
+- **💾 Robust Data Handling**:
+  - **Declarative Transactions**: Utilizes `typeorm-transactional` for **Spring Boot-like `@Transactional`** management, ensuring ACID compliance without boilerplate.
+  - **Hybrid Database Access**: Combines TypeORM for standard CRUD with **Raw SQL** for high-performance complex queries.
+  - **Soft Deletes**: Implements data retention policies using soft delete mechanisms.
+
+- **⚙️ Operational Excellence**:
+  - **DTO Validation**: Strict input validation using `class-validator` and `class-transformer` pipes.
+  - **Structured Logging**: Integrated `winston` logger for production-grade observability.
+  - **Dynamic Headers**: Context-aware response headers (`X-App-Version`, `X-Platform`).
