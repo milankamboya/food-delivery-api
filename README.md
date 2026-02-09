@@ -141,3 +141,15 @@ This project showcases advanced architectural patterns and Senior-level engineer
   - **DTO Validation**: Strict input validation using `class-validator` and `class-transformer` pipes.
   - **Structured Logging**: Integrated `winston` logger for production-grade observability.
   - **Dynamic Headers**: Context-aware response headers (`X-App-Version`, `X-Platform`).
+
+## Licensing & Usage
+
+This repository is **not open source**.
+
+It is shared publicly for portfolio and evaluation purposes only.
+See the LICENSE file for details.
+
+## Contact
+
+If you would like a walkthrough, full implementation, or a custom solution:
+[Milan K.](https://www.linkedin.com/in/milankamboya/)
